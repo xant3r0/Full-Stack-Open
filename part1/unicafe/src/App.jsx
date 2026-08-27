@@ -10,16 +10,22 @@ const Statistics = ({counters}) => {
   const avg = (good - bad) / total;
   const pos = (good / total) * 100;
 
-  return (
-      <div>
-        <StatisticDisplay title={'Good'} counter={good}></StatisticDisplay>
-        <StatisticDisplay title={'Neutral'} counter={neutral}></StatisticDisplay>
-        <StatisticDisplay title={'Bad'} counter={bad}></StatisticDisplay>
-        <StatisticDisplay title={'All'} counter={total}></StatisticDisplay>
-        <StatisticDisplay title={'Average'} counter={avg}></StatisticDisplay>
-        <StatisticDisplay title={'Positive'} counter={pos}>%</StatisticDisplay>
-      </div>
-  )
+  if(total === 0) {
+    return (
+        <p>No feedback given</p>
+    )
+  } else {
+    return (
+        <div>
+          <StatisticDisplay title={'Good'} counter={good}></StatisticDisplay>
+          <StatisticDisplay title={'Neutral'} counter={neutral}></StatisticDisplay>
+          <StatisticDisplay title={'Bad'} counter={bad}></StatisticDisplay>
+          <StatisticDisplay title={'All'} counter={total}></StatisticDisplay>
+          <StatisticDisplay title={'Average'} counter={avg}></StatisticDisplay>
+          <StatisticDisplay title={'Positive'} counter={pos}>%</StatisticDisplay>
+        </div>
+    )
+  };
 };
 
 const App = () => {
