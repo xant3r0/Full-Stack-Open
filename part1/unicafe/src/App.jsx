@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const Button = ({text,onClick}) => <button onClick={onClick}>{text}</button>
 
-const StatisticDisplay = ({title,counter,children}) => <p>{title} {counter} {children}</p>
+const StatisticLine = ({title,counter,children}) => <p>{title} {counter} {children}</p>
 
 const Statistics = ({counters}) => {
 
@@ -17,12 +17,12 @@ const Statistics = ({counters}) => {
   } else {
     return (
         <div>
-          <StatisticDisplay title={'Good'} counter={good}></StatisticDisplay>
-          <StatisticDisplay title={'Neutral'} counter={neutral}></StatisticDisplay>
-          <StatisticDisplay title={'Bad'} counter={bad}></StatisticDisplay>
-          <StatisticDisplay title={'All'} counter={total}></StatisticDisplay>
-          <StatisticDisplay title={'Average'} counter={avg}></StatisticDisplay>
-          <StatisticDisplay title={'Positive'} counter={pos}>%</StatisticDisplay>
+          <StatisticLine title='Good' counter={good}></StatisticLine>
+          <StatisticLine title='Neutral' counter={neutral}></StatisticLine>
+          <StatisticLine title='Bad' counter={bad}></StatisticLine>
+          <StatisticLine title='All' counter={total}></StatisticLine>
+          <StatisticLine title='Average' counter={avg}></StatisticLine>
+          <StatisticLine title='Positive' counter={pos}>%</StatisticLine>
         </div>
     )
   };
@@ -38,9 +38,9 @@ const App = () => {
   return (
       <div>
         <h1>Give Feedback</h1>
-        <Button text={'Good'} onClick={() => setGood(good + 1)}></Button>
-        <Button text={'Neutral'} onClick={() => setNeutral(neutral + 1)}></Button>
-        <Button text={'Bad'} onClick={() => setBad(bad + 1)}></Button>
+        <Button text='Good' onClick={() => setGood(good + 1)}></Button>
+        <Button text='Neutral' onClick={() => setNeutral(neutral + 1)}></Button>
+        <Button text='Bad' onClick={() => setBad(bad + 1)}></Button>
         <h1>Statistics</h1>
         <Statistics counters={[good,neutral,bad,total]}></Statistics>
       </div>
