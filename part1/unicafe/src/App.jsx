@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const Button = ({text,onClick}) => <button onClick={onClick}>{text}</button>
 
-const StatisticLine = ({title,counter,children}) => <p>{title} {counter} {children}</p>
+const StatisticLine = ({title,counter,children}) => <tr><td>{title}</td><td>{counter} {children}</td></tr>
 
 const Statistics = ({counters}) => {
 
@@ -16,14 +16,16 @@ const Statistics = ({counters}) => {
     )
   } else {
     return (
-        <div>
-          <StatisticLine title='Good' counter={good}></StatisticLine>
-          <StatisticLine title='Neutral' counter={neutral}></StatisticLine>
-          <StatisticLine title='Bad' counter={bad}></StatisticLine>
-          <StatisticLine title='All' counter={total}></StatisticLine>
-          <StatisticLine title='Average' counter={avg}></StatisticLine>
-          <StatisticLine title='Positive' counter={pos}>%</StatisticLine>
-        </div>
+        <table>
+          <tbody>
+           <StatisticLine title='Good' counter={good}></StatisticLine>
+           <StatisticLine title='Neutral' counter={neutral}></StatisticLine>
+           <StatisticLine title='Bad' counter={bad}></StatisticLine>
+           <StatisticLine title='All' counter={total}></StatisticLine>
+           <StatisticLine title='Average' counter={avg}></StatisticLine>
+           <StatisticLine title='Positive' counter={pos}>%</StatisticLine>
+          </tbody>
+        </table>
     )
   };
 };
