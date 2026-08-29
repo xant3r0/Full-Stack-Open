@@ -6,9 +6,9 @@ const StatisticLine = ({title,counter,children}) => <tr><td>{title}</td><td>{cou
 
 const Statistics = ({counters}) => {
 
-  const [good,neutral,bad,total] = counters;
-  const avg = (good - bad) / total;
-  const pos = (good / total) * 100;
+  const [good,neutral,bad,total] = counters
+  const avg = (good - bad) / total
+  const pos = (good / total) * 100
 
   if(total === 0) {
     return (
@@ -27,15 +27,15 @@ const Statistics = ({counters}) => {
           </tbody>
         </table>
     )
-  };
-};
+  }
+}
 
 const App = () => {
   // save clicks of each button to its own state
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
-  const total = good + neutral + bad;
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+  const total = good + neutral + bad
 
   return (
       <div>
@@ -47,6 +47,6 @@ const App = () => {
         <Statistics counters={[good,neutral,bad,total]}></Statistics>
       </div>
   )
-};
+}
 
-export default App;
+export default App
