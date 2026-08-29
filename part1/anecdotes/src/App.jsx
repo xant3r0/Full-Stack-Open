@@ -40,9 +40,9 @@ const App = () => {
         <p>Has {votes[selected]} votes</p>
         <Button fn={vote} text='Vote'></Button>
         <Button fn={nextAnecdote} text='Next anecdote'></Button>
-        {/*<h1>Anecdote with most votes</h1>*/}
-        {/*<p>{anecdotes[votes.indexOf(Math.max(...votes))]}</p>*/}
-        {/*<p>Has {votes[votes.indexOf(Math.max(...votes))]} votes</p>*/}
+        <h1>Anecdote with most votes</h1>
+        <p>{anecdotes[votes.indexOf(Math.max(...votes))]}</p>
+        <p>Has {votes[votes.indexOf(Math.max(...votes))]} votes</p>
       </div>
   )
 }
