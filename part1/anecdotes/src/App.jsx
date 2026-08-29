@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import {useState} from 'react'
 
 const Button = ({fn,text}) => {
   return(
@@ -19,16 +19,30 @@ const App = () => {
   ]
 
   const [selected, setSelected] = useState(0)
+  const[votes, setVote] = useState(Array(anecdotes.length).fill(0));
+
 
   const nextAnecdote = () => {
     const randomNumber = Math.floor(Math.random() * anecdotes.length)
     setSelected(randomNumber)
+  }
+
+  const vote = () => {
+    const votesCopy = [...votes]
+    votesCopy[selected]++
+    setVote(votesCopy)
   };
 
   return (
       <div>
+        <h1>Anecdote of the day</h1>
         <p>{anecdotes[selected]}</p>
+        <p>Has {votes[selected]} votes</p>
+        <Button fn={vote} text='Vote'></Button>
         <Button fn={nextAnecdote} text='Next anecdote'></Button>
+        {/*<h1>Anecdote with most votes</h1>*/}
+        {/*<p>{anecdotes[votes.indexOf(Math.max(...votes))]}</p>*/}
+        {/*<p>Has {votes[votes.indexOf(Math.max(...votes))]} votes</p>*/}
       </div>
   )
 }
