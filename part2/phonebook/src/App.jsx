@@ -6,15 +6,13 @@ import PersonsService from "./services/Persons.js"
 
 const App = () => {
   const getPersonsFromServer = () => {
-      PersonsService.getAllPersons().then(res => setPersons(res.data)).catch(e => console.log(e))
+      PersonsService.getAllPersons().then(data => setPersons(data))
   }
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName,setNewFilter] = useState('')
-  const filterHandler = (event) => {
-      setNewFilter(event.target.value)
-  }
+  const filterHandler = (event) => setNewFilter(event.target.value)
   const filteredPersons = persons.filter(person =>
       person.name.toLowerCase().startsWith(filterName.toLowerCase())
   )
@@ -33,15 +31,22 @@ const App = () => {
        setNewName('')
        setNewNumber('')
      } else {
-       PersonsService.addPersonToDb({name:newName,number:newNumber})
-           .then(res => setPersons(persons.concat(res.data)))
-           .catch(e => console.log(e))
+       PersonsService.addPersonToDb({name:newName ,number:newNumber, id:Date.now()}).then(data => setPersons(persons.concat(data)))
        setNewName('')
        setNewNumber('')
      }
   }
 
-   useEffect(getPersonsFromServer, []);
+  const deletePerson = (userId,personName) => {
+      if(window.confirm(`Delete ${personName} ?`)) {
+          PersonsService.deleteUserFromDb(userId)
+              .then(
+                  data => setPersons(persons.filter(person => person.id !== data.id))
+              )
+      }
+  }
+
+  useEffect(getPersonsFromServer, []);
 
   return (
       <div>
@@ -50,7 +55,7 @@ const App = () => {
         <h2>Add a new</h2>
         <PersonForm valuesAndHandlers={[newName,nameHandler,newNumber,numberHandler,addPerson]}></PersonForm>
         <h2>Numbers</h2>
-        <Persons filteredPersons={filteredPersons}></Persons>
+        <Persons filteredPersons={filteredPersons} deletePerson={deletePerson}></Persons>
       </div>
   )
 }
