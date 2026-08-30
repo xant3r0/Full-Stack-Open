@@ -2,8 +2,7 @@ import axios from 'axios'
 const baseUrl = 'http://localhost:3001/persons'
 
 const getAllPersons = () => {
-    const res = axios.get(baseUrl)
-    return res.then(res => res.data)
+    return axios.get(baseUrl).then(res => res.data)
 }
 
 const addPersonToDb = (userObj) => {
@@ -14,5 +13,9 @@ const deleteUserFromDb = (userId) => {
     return axios.delete(`${baseUrl}/${userId}`).then(res => res.data)
 }
 
-export default {getAllPersons,addPersonToDb,deleteUserFromDb}
+const replaceOldNumber = (userId,userObj) => {
+    return axios.put(`${baseUrl}/${userId}`,userObj).then(res => res.data)
+}
+
+export default {getAllPersons,addPersonToDb,deleteUserFromDb,replaceOldNumber}
 
