@@ -9,6 +9,7 @@ const App = () => {
       axios
           .get('http://localhost:3001/persons')
           .then(res => setPersons(res.data))
+          .catch(e => console.log(e))
   }
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
@@ -35,7 +36,10 @@ const App = () => {
        setNewName('')
        setNewNumber('')
      } else {
-       setPersons(persons.concat({name:newName,number:newNumber}))
+       axios
+           .post('http://localhost:3001/persons',{name:newName,number:newNumber})
+           .then(res => setPersons(persons.concat(res.data)))
+           .catch(e => console.log(e))
        setNewName('')
        setNewNumber('')
      }
