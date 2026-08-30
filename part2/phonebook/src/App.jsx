@@ -1,15 +1,12 @@
 import { useState, useEffect } from 'react'
-import Filter from "./components/Filter.jsx";
-import PersonForm from "./components/PersonForm.jsx";
-import Persons from "./components/Persons.jsx";
-import axios from 'axios'
+import Filter from "./components/Filter.jsx"
+import PersonForm from "./components/PersonForm.jsx"
+import Persons from "./components/Persons.jsx"
+import PersonsService from "./services/Persons.js"
 
 const App = () => {
   const getPersonsFromServer = () => {
-      axios
-          .get('http://localhost:3001/persons')
-          .then(res => setPersons(res.data))
-          .catch(e => console.log(e))
+      PersonsService.getAllPersons().then(res => setPersons(res.data)).catch(e => console.log(e))
   }
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
@@ -36,8 +33,7 @@ const App = () => {
        setNewName('')
        setNewNumber('')
      } else {
-       axios
-           .post('http://localhost:3001/persons',{name:newName,number:newNumber})
+       PersonsService.addPersonToDb({name:newName,number:newNumber})
            .then(res => setPersons(persons.concat(res.data)))
            .catch(e => console.log(e))
        setNewName('')
@@ -45,7 +41,7 @@ const App = () => {
      }
   }
 
-  useEffect(getPersonsFromServer, []);
+   useEffect(getPersonsFromServer, []);
 
   return (
       <div>
