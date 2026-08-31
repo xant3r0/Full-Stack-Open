@@ -1,0 +1,11 @@
+.successMessageContainer {
+    border:3px solid teal;
+    color:teal;
+    border-radius:5px;
+}
+
+.errorMessageContainer {
+    border:3px solid darkred;
+    color:darkred;
+    border-radius:5px;
+}
