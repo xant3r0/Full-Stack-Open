@@ -30,7 +30,6 @@ const App = () => {
         setFilteredCountries(countries)
     } else {
         showFilteredCountries()
-        console.log(filteredCountries)
     }
   }, [filterValue]);
 

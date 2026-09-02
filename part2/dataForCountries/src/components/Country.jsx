@@ -1,15 +1,17 @@
+import Weather from "../components/Weather.jsx";
+
 const Country = ({country}) => {
-    console.log(country[0])
     return (
         <div>
-            <h1>{country[0].name.official}</h1>
-            <p>{country[0].capital}</p>
-            <p>Area {country[0].area}</p>
+            <h1>{country.name.official}</h1>
+            <p>{country.capital}</p>
+            <p>Area {country.area}</p>
             <h2>Languages</h2>
             <ul>
-                {Object.entries(country[0].languages).map(([code,lang]) => <li key={code}>{lang}</li>)}
+                {Object.entries(country.languages).map(([code,lang]) => <li key={code}>{lang}</li>)}
             </ul>
-            <img src={country[0].flags.svg} style={{width: "500px", height: "300px"}}/>
+            <img src={country.flags.svg} style={{width: "500px", height: "300px"}}/>
+            <Weather capital={country.capital}></Weather>
         </div>
     )
 }
