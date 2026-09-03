@@ -1,7 +1,9 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
+require('dotenv').config()
 const app = express()
-const PORT = 3001
+const PORT = process.env.PORT
 
 morgan.token('person',(req) => {
     if(req.method === 'POST') {
@@ -20,7 +22,7 @@ app.use(express.json()).use(morgan((tokens,req,res) => {
         tokens['response-time'](req, res), 'ms',
         tokens['person'](req, res)
     ].join(' ')
-}))
+})).use(cors())
 
 const getRandomId = () => {
     const maxId = 1e9
@@ -94,7 +96,7 @@ app.post('/api/persons',(req,res) => {
         return res.status(400).json({error:"The name must be unique!"})
     } else {
         persons = persons.concat({"id":getRandomId(),"name":name,"number":number})
-        return res.status(201).json({message:"Person successfully added!"})
+        return res.status(201).json({message:"Person successfully added!",data:{"id":getRandomId(),"name":name,"number":number}})
     }
 })
 
