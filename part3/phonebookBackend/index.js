@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const {init} = require("express/lib/application");
 require('dotenv').config()
 const app = express()
 const PORT = process.env.PORT
@@ -73,10 +74,11 @@ app.get('/api/persons/:id',(req,res) => {
 
 app.delete('/api/persons/:id',(req,res) => {
     const deleteId = req.params.id
-    const initialLength = persons.length
-    persons = persons.filter(person => person.id != deleteId)
+    const initial = persons
+    persons = initial.filter(person => person.id != deleteId)
+    console.log(initial.length,persons.length)
 
-    if(initialLength === persons.length) {
+    if(initial.length === persons.length) {
         return res.status(404).end()
     } else {
         return res.status(204).end()
@@ -95,8 +97,9 @@ app.post('/api/persons',(req,res) => {
     if(found) {
         return res.status(400).json({error:"The name must be unique!"})
     } else {
-        persons = persons.concat({"id":getRandomId(),"name":name,"number":number})
-        return res.status(201).json({message:"Person successfully added!",data:{"id":getRandomId(),"name":name,"number":number}})
+        const person = {"id":getRandomId(),"name":name,"number":number}
+        persons = persons.concat(person)
+        return res.status(201).json({message:"Person successfully added!",data:person})
     }
 })
 
