@@ -22,7 +22,7 @@ app.use(express.json()).use(morgan((tokens,req,res) => {
         tokens['response-time'](req, res), 'ms',
         tokens['person'](req, res)
     ].join(' ')
-})).use(cors())
+})).use(cors()).use(express.static('dist'))
 
 const getRandomId = () => {
     const maxId = 1e9
