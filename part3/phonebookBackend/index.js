@@ -33,15 +33,17 @@ app.get('/api/persons',(req,res,next) => {
     }).catch(error => next(error))
 })
 
-app.get('/info',(req,res) => {
+app.get('/info',(req,res, next) => {
     const date = new Date()
-    res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${date.toString()}</p>`)
+    People.collection.countDocuments().then(count => res.send(`<p>Phonebook has info for ${count} people</p><p>${date.toString()}</p>`))
+        .catch(e => next(e))
 })
 
 app.get('/api/persons/:id',(req,res,next) => {
     const id = req.params.id
     People.findById(id).then(data => {
-        return res.status(200).json(data).end()
+        //return res.status(200).json(data)
+        return data === null ? res.status(404).json({error:"There isn't such a user with the provided Id!"}) : res.status(200).json(data)
     })//.catch(error => next(error))
 })
 
