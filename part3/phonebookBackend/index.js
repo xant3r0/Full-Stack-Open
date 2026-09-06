@@ -1,7 +1,8 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
-const {init} = require("express/lib/application");
+const error = require('./middlewares/error')
+const People = require('./modules/People.js')
 require('dotenv').config()
 const app = express()
 const PORT = process.env.PORT
@@ -25,36 +26,11 @@ app.use(express.json()).use(morgan((tokens,req,res) => {
     ].join(' ')
 })).use(cors()).use(express.static('dist'))
 
-const getRandomId = () => {
-    const maxId = 1e9
-    return String(Math.ceil(Math.random() * (maxId + 1)))
-}
+app.get('/api/persons',(req,res,next) => {
+    People.find({}).then(data => {
+        res.status(200).json(data).end()
 
-let persons = [
-    {
-        "id": "1",
-        "name": "Arto Hellas",
-        "number": "040-123456"
-    },
-    {
-        "id": "2",
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523"
-    },
-    {
-        "id": "3",
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-    },
-    {
-        "id": "4",
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122"
-    }
-]
-
-app.get('/api/persons',(req,res) => {
-    return res.status(200).json(persons)
+    }).catch(error => next(error))
 })
 
 app.get('/info',(req,res) => {
@@ -62,46 +38,43 @@ app.get('/info',(req,res) => {
     res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${date.toString()}</p>`)
 })
 
-app.get('/api/persons/:id',(req,res) => {
-    const searchId = req.params.id
-    const person = persons.filter(person => person.id == searchId)
-    if(person) {
-        return res.status(200).json(person)
-    } else {
-        return res.status(404).end()
-    }
+app.get('/api/persons/:id',(req,res,next) => {
+    const id = req.params.id
+    People.findById(id).then(data => {
+        return res.status(200).json(data).end()
+    })//.catch(error => next(error))
 })
 
-app.delete('/api/persons/:id',(req,res) => {
-    const deleteId = req.params.id
-    const initial = persons
-    persons = initial.filter(person => person.id != deleteId)
-    console.log(initial.length,persons.length)
-
-    if(initial.length === persons.length) {
-        return res.status(404).end()
-    } else {
-        return res.status(204).end()
-    }
+app.delete('/api/persons/:id',(req,res,next) => {
+    const id = req.params.id
+    People.findByIdAndDelete(id)
+        .then(data => data === null ? res.status(404).json({error:"This note doesnt exist or was already deleted!"}) : res.status(204).end())
+        .catch(error => next(error))
 })
 
-app.post('/api/persons',(req,res) => {
-    const {name,number} = req.body
+app.post('/api/persons',(req,res,next) => {
+    const name = req.body.name
+    const number = Number(req.body.number)
 
-    if(!name.length && !number.length) {
+    if(!name.length || number === undefined) {
         return res.status(400).json({error:"The name or number is missing!"})
     }
 
-    const found = persons.find(person => person.name === name)
-
-    if(found) {
-        return res.status(400).json({error:"The name must be unique!"})
-    } else {
-        const person = {"id":getRandomId(),"name":name,"number":number}
-        persons = persons.concat(person)
-        return res.status(201).json({message:"Person successfully added!",data:person})
+    if((typeof(name) !== 'string') || Number.isNaN(number)) {
+        return res.status(400).json({error:"Use for number and name corresponding types!"})
     }
+
+    const person = new People({
+        name:name,
+        number:number
+    })
+
+    person.save()
+        .then(() => res.status(201).json({message:"Person successfully added!",data:person}).end())
+        .catch(error => next(error))
 })
+
+app.use(error)
 
 app.listen(PORT,() => {
     console.log(`Server started on port ${PORT}`)

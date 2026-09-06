@@ -3,7 +3,7 @@ import Filter from "./components/Filter.jsx"
 import PersonForm from "./components/PersonForm.jsx"
 import Persons from "./components/Persons.jsx"
 import PersonsService from "./services/Persons.js"
-import Notification from "./components/Notification.jsx";
+import Notification from "./components/Notification.jsx"
 
 const App = () => {
   const getPersonsFromServer = () => {
@@ -35,7 +35,7 @@ const App = () => {
        setNewNumber('')
      } else {
        PersonsService.addPersonToDb({name:newName ,number:newNumber, id:Date.now()}).then(data => {
-           setPersons(persons.concat(data))
+           setPersons(persons.concat(data.data))
            setMessage(`Added ${newName}`)
            setClassName('successMessageContainer')
            setTimeout(() => {
@@ -45,6 +45,7 @@ const App = () => {
            setNewName('')
            setNewNumber('')
        })
+           .catch(e => window.alert(e.message))
      }
   }
 
@@ -52,8 +53,20 @@ const App = () => {
       if(window.confirm(`Delete ${personName} ?`)) {
           PersonsService.deleteUserFromDb(userId)
               .then(
-                  data => setPersons(persons.filter(person => person.id !== data.id))
+                  data => {
+                      console.log(data)
+                      setPersons(persons.filter(person => person.id !== userId))
+                  }
               )
+              .catch(() => {
+                  setMessage(`Information of ${personName} has been already been removed from server`)
+                  setClassName('errorMessageContainer')
+                  setTimeout(() => {
+                      setMessage(null)
+                      setClassName(null)
+                  },3000)
+                  setPersons(persons.filter(person => person.id !== userId))
+              })
       }
   }
 
@@ -74,7 +87,7 @@ const App = () => {
                       setClassName(null)
                   },3000)
               })
-              .catch(e => {
+              .catch((e) => {
                 setMessage(`Information of ${newName} has been already been removed from server`)
                 setClassName('errorMessageContainer')
                 setTimeout(() => {
