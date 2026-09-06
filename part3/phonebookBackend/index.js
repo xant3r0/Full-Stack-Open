@@ -74,6 +74,19 @@ app.post('/api/persons',(req,res,next) => {
         .catch(error => next(error))
 })
 
+app.put('/api/persons/:id',(req, res, next) => {
+    const id = req.params.id
+    const newNumber = Number(req.body.number)
+
+    People.findByIdAndUpdate(
+        id,
+        {number:newNumber},
+        { returnDocument:'after', runValidators: true }
+    ).then(data => {
+        data === null ? res.status(404).json("A note with such Id doesn't exist!") : res.status(200).json(data)
+    }).catch(e => next(e))
+})
+
 app.use(error)
 
 app.listen(PORT,() => {
