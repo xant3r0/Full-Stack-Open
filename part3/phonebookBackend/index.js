@@ -73,7 +73,12 @@ app.post('/api/persons',(req,res,next) => {
 
     person.save()
         .then(() => res.status(201).json({message:"Person successfully added!",data:person}).end())
-        .catch(error => next(error))
+        .catch(error => {
+            if(error._message === 'person validation failed') {
+               res.status(400).json({error:"Person validation failed!"}) 
+            }
+            //next(error)
+        })
 })
 
 app.put('/api/persons/:id',(req, res, next) => {

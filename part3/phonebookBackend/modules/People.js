@@ -11,7 +11,11 @@ mongoose.set('strictQuery',false)
 mongoose.connect(url, {family: 4}).then(() => console.log("Connected to server!"))
 
 const personSchema = new mongoose.Schema({
-    name:String,
+    name: {
+        type:String,
+        minLength: 3,
+        required: true
+    },
     number:Number
 })
 
