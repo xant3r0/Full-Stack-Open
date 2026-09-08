@@ -80,7 +80,7 @@ app.post('/api/persons',(req,res,next) => {
 
 app.put('/api/persons/:id',(req, res, next) => {
     const id = req.params.id
-    const newNumber = Number(req.body.number)
+    const newNumber = req.body.number
 
     People.findByIdAndUpdate(
         id,
@@ -88,7 +88,7 @@ app.put('/api/persons/:id',(req, res, next) => {
         { returnDocument:'after', runValidators: true }
     ).then(data => {
         data === null ? res.status(404).json("A note with such Id doesn't exist!") : res.status(200).json(data)
-    }).catch(e => next(e))
+    }).catch(error => res.status(400).json(error))
 })
 
 app.use(error)
