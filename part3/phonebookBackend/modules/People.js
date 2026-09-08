@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const path = require('path')
 const dns = require('node:dns')
-require('dotenv').config({path:path.resolve('D:\\Full-Stack-Open\\part3\\phonebookBackend','.env')})
+require('dotenv').config({path:path.resolve('modules','../.env')})
 
 dns.setServers(['8.8.8.8'])
 
@@ -16,7 +16,13 @@ const personSchema = new mongoose.Schema({
         minLength: 3,
         required: true
     },
-    number:Number
+    number: {
+        type:String,
+        validate: {
+            validator: n => /^(?:\d{2}-\d{6,}|\d{3}-\d{5,})$/.test(n),
+            message: props => `${props.value} is not a valid phone number!`
+        }
+    }
 })
 
 personSchema.set('toJSON', {

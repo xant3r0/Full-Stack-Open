@@ -55,15 +55,10 @@ app.delete('/api/persons/:id',(req,res,next) => {
 })
 
 app.post('/api/persons',(req,res,next) => {
-    const name = req.body.name
-    const number = Number(req.body.number)
+    const {name,number} = req.body
 
     if(!name.length || number === undefined) {
         return res.status(400).json({error:"The name or number is missing!"})
-    }
-
-    if((typeof(name) !== 'string') || Number.isNaN(number)) {
-        return res.status(400).json({error:"Use for number and name corresponding types!"})
     }
 
     const person = new People({
@@ -74,9 +69,11 @@ app.post('/api/persons',(req,res,next) => {
     person.save()
         .then(() => res.status(201).json({message:"Person successfully added!",data:person}).end())
         .catch(error => {
-            if(error._message === 'person validation failed') {
-               res.status(400).json({error:"Person validation failed!"}) 
-            }
+            //console.log(error)
+            res.status(400).json(error)
+            // if(error._message === 'person validation failed') {
+            //    res.status(400).json({error:"Person validation failed!"})
+            // }
             //next(error)
         })
 })
