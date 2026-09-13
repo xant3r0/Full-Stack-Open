@@ -10,7 +10,7 @@ blogsRouter.get('/',async (req, res,next) => {
     }
 })
 
-blogsRouter.post('/',(req, res, next) => {
+blogsRouter.post('/',async (req, res, next) => {
     const { title, author, url, likes } = req.body
 
     if(!title || !author || !url || !likes) {
@@ -24,9 +24,13 @@ blogsRouter.post('/',(req, res, next) => {
         likes
     })
 
-    blog.save()
-        .then(() => res.status(201).json({message:"Blog successfully created!"}))
-        .catch(e => next(e)/*res.status(500).json({message:`Something went wrong on the server! (${e})`})*/)
+    try {
+        await blog.save()
+        res.status(201).json({blog})
+    } catch(e) {
+        next(e)
+    }
+
 })
 
 module.exports = blogsRouter

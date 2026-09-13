@@ -7,6 +7,13 @@ const Blog = require('../models/blog.js')
 
 const api = supertest(app)
 
+const newBlog = {
+    title: "Tuzic",
+    author: "Volcu",
+    url: "https://reactpdasdsadsaatterns.com/",
+    likes: 696
+}
+
 const initialBlogs = [
     {
         _id: "5a422a851b54a676234d17f7",
@@ -66,13 +73,13 @@ beforeEach(async () => {
     await Promise.all(promiseArr)
 })
 
-test.only('Verify that app returns the correct amount of blog posts in json format', async () => {
+test('Verify that app returns the correct amount of blog posts in json format', async () => {
     const res = await api.get('/api/blogs')
     assert.strictEqual(res.body.length, 6)
     assert.match(res.header['content-type'], /application\/json/)
 })
 
-test.only('Verify that app returns the unique identifier named id, not _id', async () => {
+test('Verify that app returns the unique identifier named id, not _id', async () => {
     const res = await api.get('/api/blogs')
     const blogs = res.body
 
@@ -80,6 +87,15 @@ test.only('Verify that app returns the unique identifier named id, not _id', asy
         assert.ok(blog.id !== undefined)
         assert.strictEqual(blog._id, undefined)
     })
+})
+
+test.only('Verify that app creates succesfully a new blog post', async () => {
+    const res = await api.post('/api/blogs').send(newBlog)
+    const returnedBlog = res.body.blog
+
+    const { id, ...blogWithoutId } = returnedBlog
+
+    assert.deepStrictEqual(blogWithoutId, newBlog)
 })
 
 after(async () => {
