@@ -72,6 +72,16 @@ test.only('Verify that app returns the correct amount of blog posts in json form
     assert.match(res.header['content-type'], /application\/json/)
 })
 
+test.only('Verify that app returns the unique identifier named id, not _id', async () => {
+    const res = await api.get('/api/blogs')
+    const blogs = res.body
+
+    blogs.forEach(blog => {
+        assert.ok(blog.id !== undefined)
+        assert.strictEqual(blog._id, undefined)
+    })
+})
+
 after(async () => {
-    mongoose.connection.close()
+    await mongoose.connection.close()
 })
