@@ -1,5 +1,5 @@
 const supertest = require('supertest')
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const app = require('../app.js')
@@ -18,6 +18,18 @@ const newBlogWithoutLikes = {
     title: "Tuzic",
     author: "Volcu",
     url: "https://reactpdasdsadsaatterns.com/"
+}
+
+const newBlogWithoutTitle = {
+    author: "Volcu",
+    url: "https://reactpdasdsadsaatterns.com/",
+    likes: 696
+}
+
+const newBlogWithoutUrl = {
+    title: "Tuzic",
+    author: "Volcu",
+    likes: 696
 }
 
 const initialBlogs = [
@@ -104,7 +116,7 @@ test('Verify that app creates succesfully a new blog post', async () => {
     assert.deepStrictEqual(blogWithoutId, newBlog)
 })
 
-test.only('Verify that if the likes property is missing, it defaults to 0', async () => {
+test('Verify that if the likes property is missing, it defaults to 0', async () => {
     const res = await api.post('/api/blogs').send(newBlogWithoutLikes)
     const returnedBlog = res.body.blog
 
@@ -115,6 +127,22 @@ test.only('Verify that if the likes property is missing, it defaults to 0', asyn
         author: "Volcu",
         url: "https://reactpdasdsadsaatterns.com/",
         likes: 0
+    })
+})
+
+// test.only('Verify that if the title or url properties are missing, server responds with 400', async () => {
+//     await api.post('/api/blogs')
+// })
+
+describe('Verify the POST endpoint ', () => {
+    test('when title is missing, server responds with 400', async () => {
+        const res = await api.post('/api/blogs').send(newBlogWithoutTitle)
+        assert.strictEqual(res.status, 400)
+    })
+
+    test('when url is missing, server responds with 400', async () => {
+        const res = await api.post('/api/blogs').send(newBlogWithoutUrl)
+        assert.strictEqual(res.status, 400)
     })
 })
 
