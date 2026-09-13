@@ -13,7 +13,7 @@ blogsRouter.get('/',async (req, res,next) => {
 blogsRouter.post('/',async (req, res, next) => {
     const { title, author, url, likes } = req.body
 
-    if(!title || !author || !url || !likes) {
+    if(!title || !author || !url) {
         return res.status(400).json({error:"Complete the title, author, url and likes"})
     }
 
@@ -21,7 +21,7 @@ blogsRouter.post('/',async (req, res, next) => {
         title,
         author,
         url,
-        likes
+        likes: !likes ? 0 : likes
     })
 
     try {

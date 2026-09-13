@@ -14,6 +14,12 @@ const newBlog = {
     likes: 696
 }
 
+const newBlogWithoutLikes = {
+    title: "Tuzic",
+    author: "Volcu",
+    url: "https://reactpdasdsadsaatterns.com/"
+}
+
 const initialBlogs = [
     {
         _id: "5a422a851b54a676234d17f7",
@@ -89,13 +95,27 @@ test('Verify that app returns the unique identifier named id, not _id', async ()
     })
 })
 
-test.only('Verify that app creates succesfully a new blog post', async () => {
+test('Verify that app creates succesfully a new blog post', async () => {
     const res = await api.post('/api/blogs').send(newBlog)
     const returnedBlog = res.body.blog
 
     const { id, ...blogWithoutId } = returnedBlog
 
     assert.deepStrictEqual(blogWithoutId, newBlog)
+})
+
+test.only('Verify that if the likes property is missing, it defaults to 0', async () => {
+    const res = await api.post('/api/blogs').send(newBlogWithoutLikes)
+    const returnedBlog = res.body.blog
+
+    const { id, ...blogWithoutId } = returnedBlog
+
+    assert.deepStrictEqual(blogWithoutId,{
+        title: "Tuzic",
+        author: "Volcu",
+        url: "https://reactpdasdsadsaatterns.com/",
+        likes: 0
+    })
 })
 
 after(async () => {
