@@ -107,7 +107,7 @@ describe('Test for favoriteBlog fn when ', () => {
     })
 })
 
-describe('mostBlogs ', () => {
+describe('mostBlogs() ', () => {
     test('when there is only one blog', () => {
         const result = listHelper.mostBlogs(listWithOneBlog)
         assert.deepStrictEqual(result, {
@@ -126,6 +126,29 @@ describe('mostBlogs ', () => {
 
     test('when blog list is empty, should return null', () => {
         const result = listHelper.mostBlogs(emptyBlog)
+        assert.deepStrictEqual(result, null)
+    })
+})
+
+describe('mostLikes()', () => {
+    test('when there is only one blog', () => {
+        const result = listHelper.mostLikes(listWithOneBlog)
+        assert.deepStrictEqual(result, {
+            author: 'Edsger W. Dijkstra',
+            likes: 5
+        })
+    })
+
+    test('when list has several blogs, equals respectively', () => {
+        const result = listHelper.mostLikes(blogs)
+        assert.deepStrictEqual(result, {
+            author: "Edsger W. Dijkstra",
+            likes: 17
+        })
+    })
+
+    test('when list is empty, should return null', () => {
+        const result = listHelper.mostLikes(emptyBlog)
         assert.deepStrictEqual(result, null)
     })
 })
