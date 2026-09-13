@@ -27,8 +27,31 @@ const favoriteBlog = (blogs) => {
     return blogs[favoriteIndex]
 }
 
+const mostBlogs = (blogs) => {
+    let author = '',maxBlogs = -1
+
+    blogs.forEach((blog) => {
+        const filteredBlogs = blogs.filter(b => b.author === blog.author)
+
+        if(filteredBlogs.length > maxBlogs) {
+            maxBlogs = filteredBlogs.length
+            author = blog.author
+        }
+    })
+
+    if(maxBlogs === -1) {
+        return null
+    }
+
+    return {
+        author,
+        blogs: maxBlogs
+    }
+}
+
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs
 }
