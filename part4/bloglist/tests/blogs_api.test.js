@@ -7,6 +7,13 @@ const Blog = require('../models/blog.js')
 
 const api = supertest(app)
 
+const updatedBlogToPut = {
+    title: "Stas",
+    author: "Mujic",
+    url: "https://;pca;c;adsadsa",
+    likes: 13
+}
+
 const newBlog = {
     title: "Tuzic",
     author: "Volcu",
@@ -167,6 +174,25 @@ describe('Verify the DELETE endpoint', () => {
             url: "https://reactpatterns.com/",
             likes: 7
         })
+    })
+})
+
+describe('Verify the PUT endpoint', () => {
+    test('when the id is in incorrect format', async () => {
+        const res = await api.put('/api/blogs/2344343').send(updatedBlogToPut)
+        assert.strictEqual(res.status, 400)
+    })
+
+    test('when it is given to delete a non existent blog ot PUT', async () => {
+        const res = await api.put('/api/blogs/5a422a851b54a675234d17f7').send(updatedBlogToPut)
+        assert.strictEqual(res.status, 404)
+    })
+
+    test('when there occurs a normal PUT request', async () => {
+        const res = await api.put('/api/blogs/5a422a851b54a676234d17f7').send(updatedBlogToPut)
+        const { id, ...blogWithoutId } = res.body
+
+        assert.deepStrictEqual(blogWithoutId, updatedBlogToPut)
     })
 })
 
