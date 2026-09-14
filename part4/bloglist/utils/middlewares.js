@@ -1,5 +1,8 @@
 const errorHandler = (error, req, res, next) => {
-    res.status(500).json({test:error})
+    if(error.message.includes(`Cast to ObjectId failed`)) {
+        return res.status(400).json({error:'Bad request!'})
+    }
+    res.status(500).json({test:"gnida"})
 }
 
 module.exports = { errorHandler }

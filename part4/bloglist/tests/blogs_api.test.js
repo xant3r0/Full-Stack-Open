@@ -146,6 +146,30 @@ describe('Verify the POST endpoint ', () => {
     })
 })
 
+describe('Verify the DELETE endpoint', () => {
+    test('when the id is in incorrect format', async () => {
+        const res = await api.delete('/api/blogs/2344343')
+        assert.strictEqual(res.status, 400)
+    })
+
+    test('when it is given to delete a non existent blog', async () => {
+        const res = await api.delete('/api/blogs/6aa194f95c354532296718ab')
+        assert.strictEqual(res.status, 404)
+    })
+
+    test('when there occurs a normal delete req', async () => {
+        const res = await api.delete('/api/blogs/5a422a851b54a676234d17f7')
+        const { id, ...blogWithoutId } = res.body
+
+        assert.deepStrictEqual(blogWithoutId, {
+            title: "React patterns",
+            author: "Michael Chan",
+            url: "https://reactpatterns.com/",
+            likes: 7
+        })
+    })
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
