@@ -13,7 +13,12 @@ usersRouter.get('/', async (req, res, next) => {
 
 usersRouter.post('/', async (req, res, next) => {
     const { username, name, password} = req.body
-    const newUser = new User({
+
+    if((!username || !password) || (username.length < 3 || password.length < 3)) {
+        res.status(400).json({error:'Bad request!'})
+    }
+
+    const newUser = await new User({
         username,
         name,
         passwordHash: await bcrypt.hash(password, 10)

@@ -2,6 +2,5 @@ require('dotenv').config()
 
 const SERVER_PORT = process.env.SERVER_PORT
 const MONGO_DB_URL = process.env.NODE_ENV === 'test' ? process.env.MONGO_TEST_DB_URL : process.env.MONGO_DB_URL
-//const MONGO_TEST_DB_URL = process.env.MONGO_TEST_DB_URL
 
 module.exports = { SERVER_PORT, MONGO_DB_URL }
