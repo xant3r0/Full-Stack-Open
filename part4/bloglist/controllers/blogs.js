@@ -1,8 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog.js')
 const User = require('../models/user.js')
-const jwt = require('jsonwebtoken')
-const config = require('../utils/config.js')
+const middlewares = require('../utils/middlewares.js')
 
 blogsRouter.get('/',async (req, res,next) => {
     try {
@@ -13,26 +12,19 @@ blogsRouter.get('/',async (req, res,next) => {
     }
 })
 
-blogsRouter.post('/',async (req, res, next) => {
-
-    const decodedToken = jwt.verify(req.token, config.JWT_SECRET)
-
-    const user = await User.findById(decodedToken.id)
-
+blogsRouter.post('/', middlewares.tokenExtractor, middlewares.userExtractor, async (req, res, next) => {
+    const user = await User.findById(req.user.id)
     const { title, author, url, likes } = req.body
-
     if(!title || !url) {
         return res.status(400).end().json({error:"Complete the title, author, url and likes"})
     }
-
     const blog = new Blog({
         title,
         author,
         url,
-        user: user._id,
+        user: user.id,
         likes: !likes ? 0 : likes
     })
-
     try {
         const savedBlog = await blog.save()
         user.blogs = user.blogs.concat(savedBlog._id)
@@ -41,11 +33,9 @@ blogsRouter.post('/',async (req, res, next) => {
     } catch(e) {
         next(e)
     }
-
 })
 
-blogsRouter.delete('/:id', async (req, res, next) => {
-
+blogsRouter.delete('/:id', middlewares.tokenExtractor, middlewares.userExtractor, async (req, res, next) => {
     const id = req.params.id
     try {
         const blogToDelete = await Blog.findById(id)
@@ -53,9 +43,8 @@ blogsRouter.delete('/:id', async (req, res, next) => {
             return res.status(404).json({message:'No such blog found!'})
         }
         const blogRealUser = blogToDelete.user.toString()
-        const decodedToken = jwt.verify(req.token, config.JWT_SECRET)
-        if(blogRealUser === decodedToken.id) {
-            const user = await User.findById(decodedToken.id)
+        if(blogRealUser === req.user.id) {
+            const user = await User.findById(req.user.id)
             user.blogs = user.blogs.filter(blog => blog.toString() !== blogToDelete.id)
             await user.save()
             await Blog.findByIdAndDelete(id)
@@ -68,10 +57,6 @@ blogsRouter.delete('/:id', async (req, res, next) => {
     }
 })
 
-blogsRouter.delete('/:id', async (req, res, next) => {
-    return res.status(201).json({ok:true})
-})
-
 blogsRouter.put('/:id', async (req, res, next) => {
     const id = req.params.id
     const { title, author, url, likes } = req.body
@@ -81,18 +66,15 @@ blogsRouter.put('/:id', async (req, res, next) => {
         url,
         likes
     }
-
     try {
         const newBlog = await Blog.findByIdAndUpdate(id, blogToUpdate, {
             returnDocument: 'after',
             runValidators: true,
             context: 'query'
         })
-
         if(!newBlog) {
             return res.status(404).json({message:'No such blog found!'})
         }
-
         return res.status(200).json(newBlog)
     } catch(e) {
         next(e)

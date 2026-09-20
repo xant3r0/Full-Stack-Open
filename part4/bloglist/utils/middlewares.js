@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken')
+const config = require('./config.js')
+
 const errorHandler = (error, req, res, next) => {
     if(error.message.includes(`Cast to ObjectId failed`)) {
         return res.status(400).json({ error: 'Bad request!' })
@@ -8,7 +11,7 @@ const errorHandler = (error, req, res, next) => {
     } else if(error.message === 'invalid token' || error.message === 'jwt must be provided') {
         return res.status(401).json({ error: 'Invalid token!'})
     }
-    //res.status(500).json({ test:error.message, full:error })
+    res.status(500).json({ test:error.message, full:error })
 
     next()
 }
@@ -22,4 +25,15 @@ const tokenExtractor = (req, res, next) => {
     next()
 }
 
-module.exports = { errorHandler, tokenExtractor }
+const userExtractor = (req, res, next) => {
+    try {
+        const user = jwt.verify(req.token, config.JWT_SECRET)
+        req.user = user
+    } catch {
+        return res.status(401).json({ error: "Invalid token!2222" })
+    }
+
+    next()
+}
+
+module.exports = { errorHandler, tokenExtractor, userExtractor }

@@ -14,8 +14,7 @@ mongoose.connect(config.MONGO_DB_URL, { family:4 })
 
 app
     .use(express.json())
-    .use(middlewares.tokenExtractor)
-    .use('/api/blogs',blogsRouter)
+    .use('/api/blogs', blogsRouter)
     .use('/api/users', usersRouter)
     .use('/api/login', loginRouter)
     .use(middlewares.errorHandler)
