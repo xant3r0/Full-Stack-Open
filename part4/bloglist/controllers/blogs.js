@@ -45,16 +45,31 @@ blogsRouter.post('/',async (req, res, next) => {
 })
 
 blogsRouter.delete('/:id', async (req, res, next) => {
+
     const id = req.params.id
     try {
-        const deletedBlog = await Blog.findByIdAndDelete(id)
-        if(!deletedBlog) {
+        const blogToDelete = await Blog.findById(id)
+        if(!blogToDelete) {
             return res.status(404).json({message:'No such blog found!'})
         }
-        return res.status(200).json(deletedBlog)
+        const blogRealUser = blogToDelete.user.toString()
+        const decodedToken = jwt.verify(req.token, config.JWT_SECRET)
+        if(blogRealUser === decodedToken.id) {
+            const user = await User.findById(decodedToken.id)
+            user.blogs = user.blogs.filter(blog => blog.toString() !== blogToDelete.id)
+            await user.save()
+            await Blog.findByIdAndDelete(id)
+            return res.status(204).end()
+        } else  {
+            return res.status(401).json({ error: 'Unauthorized!' })
+        }
     } catch (e) {
         next(e)
     }
+})
+
+blogsRouter.delete('/:id', async (req, res, next) => {
+    return res.status(201).json({ok:true})
 })
 
 blogsRouter.put('/:id', async (req, res, next) => {
