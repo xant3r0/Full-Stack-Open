@@ -71,7 +71,7 @@ blogsRouter.put('/:id', async (req, res, next) => {
             returnDocument: 'after',
             runValidators: true,
             context: 'query'
-        })
+        }).populate('user')
         if(!newBlog) {
             return res.status(404).json({message:'No such blog found!'})
         }
