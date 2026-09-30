@@ -16,7 +16,7 @@ blogsRouter.post('/', middlewares.tokenExtractor, middlewares.userExtractor, asy
     const user = await User.findById(req.user.id)
     const { title, author, url, likes } = req.body
     if(!title || !url) {
-        return res.status(400).end().json({error:"Complete the title, author, url and likes"})
+        return res.status(400).json({error:"Complete the title, author, url and likes"})
     }
     const blog = new Blog({
         title,
@@ -29,7 +29,8 @@ blogsRouter.post('/', middlewares.tokenExtractor, middlewares.userExtractor, asy
         const savedBlog = await blog.save()
         user.blogs = user.blogs.concat(savedBlog._id)
         await user.save()
-        res.status(201).json(savedBlog)
+        const data = await Blog.findById(savedBlog.id).populate('user')
+            res.status(201).json(data)
     } catch(e) {
         next(e)
     }
